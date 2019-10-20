@@ -23,7 +23,7 @@ class PredictionObj(graphene.ObjectType):
 class PredictionData(graphene.ObjectType):
     dishes = graphene.List(PredictionObj)
 
-    def resolve_labels(self, info):
+    def resolve_dishes(self, info):
         list = []
         common = ['Dish', 'Cuisine', 'Fried food', 'Food', 'Ingredient', 'Breakfast', 'Produce']
         for item in self.label_annotations:
@@ -46,6 +46,8 @@ class NutrientObj(graphene.ObjectType):
 class FoodItemObj(graphene.ObjectType):
     name = graphene.String()
     nutrients = graphene.List(NutrientObj)
+    category = graphene.String()
+    image = graphene.String()
 
     def resolve_name(self, info):
         return self['food']['label']
@@ -56,6 +58,15 @@ class FoodItemObj(graphene.ObjectType):
             temp = [key, value]
             list.append(temp)
         return list
+
+    def resolve_category(self, info):
+        return self['food']['category']
+
+    def resolve_image(self, info):
+        if 'image' in self['food']:
+            return self['food']['image']
+        else:
+            return None
 
 
 class Query(usersQuery, graphene.ObjectType):
