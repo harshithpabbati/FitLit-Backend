@@ -3,10 +3,12 @@ import graphql_jwt
 import requests
 from google.cloud import vision
 from users.schema import Query as usersQuery
+from diet.schema import Query as dietQuery, Mutation as dietMutation
+
 from framework.settings import EDMAM_APP_ID, EDMAM_APP_KEY
 
 
-class Mutation(graphene.ObjectType):
+class Mutation(dietMutation, graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()
@@ -69,7 +71,7 @@ class FoodItemObj(graphene.ObjectType):
             return None
 
 
-class Query(usersQuery, graphene.ObjectType):
+class Query(usersQuery, dietQuery, graphene.ObjectType):
     identifyFood = graphene.Field(PredictionData, image=graphene.String(required=True))
     searchNutrient = graphene.List(FoodItemObj, query=graphene.String(required=True))
 
